@@ -104,9 +104,9 @@ class PSO():
             i+=1
 
         # print final results
-        print 'FINAL:'
-        print pos_best_g
-        print err_best_g
+        print ('FINAL:')
+        print (pos_best_g)
+        print (err_best_g)
 
 if __name__ == "__PSO__":
     main()
