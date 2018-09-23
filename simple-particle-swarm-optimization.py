@@ -1,18 +1,12 @@
-#------------------------------------------------------------------------------+
-#
-#   Nathan A. Rooy
-#   Simple Particle Swarm Optimization (PSO) with Python
-#   July, 2016
-#
-#------------------------------------------------------------------------------+
+#   Forked from Nathan A. Rooy's repository
 
-#--- IMPORT DEPENDENCIES ------------------------------------------------------+
+# IMPORT DEPENDENCIES
 
 from __future__ import division
 import random
 import math
 
-#--- IMPORT GUI DEPENDENCIES --------------------------------------------------+
+# IMPORT GUI DEPENDENCIES
 import sys
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
 from PyQt5.QtGui import QIcon
@@ -20,7 +14,7 @@ from PyQt5.QtCore import pyqtSlot
 
 from maingui import Ui_MainWindow   # Main page of the GUI
 
-#--- COST FUNCTION ------------------------------------------------------------+
+# COST FUNCTION
 
 # function we are attempting to optimize (minimize)
 def func1(x):
@@ -29,8 +23,7 @@ def func1(x):
         total+=x[i]**2
     return total
 
-#--- MAIN ---------------------------------------------------------------------+
-
+# MAIN
 class Particle:
     def __init__(self,x0):
         self.position_i=[]          # particle position
@@ -129,8 +122,7 @@ class PSO():
 if __name__ == "__PSO__":
     main()
 
-#--- RUN ----------------------------------------------------------------------+
-
+# RUN
 class AppWindow(QMainWindow):
     def __init__(self):
         super(AppWindow, self).__init__()
@@ -198,4 +190,4 @@ sys.exit(app.exec_())
 # initial=[5,5]               # initial starting location [x1,x2...]
 # bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
 # PSO(func1,initial,bounds,num_particles=15,maxiter=30)
-#--- END ----------------------------------------------------------------------+
+# END
