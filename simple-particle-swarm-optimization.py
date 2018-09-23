@@ -12,6 +12,14 @@ from __future__ import division
 import random
 import math
 
+#--- IMPORT GUI DEPENDENCIES --------------------------------------------------+
+import sys
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSlot
+
+from maingui import Ui_MainWindow   # Main page of the GUI
+
 #--- COST FUNCTION ------------------------------------------------------------+
 
 # function we are attempting to optimize (minimize)
@@ -70,10 +78,15 @@ class Particle:
             # adjust minimum position if neseccary
             if self.position_i[i]<bounds[i][0]:
                 self.position_i[i]=bounds[i][0]
-        
+
+globalBestPos = []
+globalBestErr = 0
+
 class PSO():
     def __init__(self,costFunc,x0,bounds,num_particles,maxiter):
         global num_dimensions
+        global globalBestPos
+        global globalBestErr
 
         num_dimensions=len(x0)
         err_best_g=-1                   # best error for group
@@ -103,18 +116,86 @@ class PSO():
                 swarm[j].update_position(bounds)
             i+=1
 
+        globalBestErr = err_best_g
+        globalBestPos = pos_best_g
+
         # print final results
         print ('FINAL:')
         print (pos_best_g)
         print (err_best_g)
+
+
 
 if __name__ == "__PSO__":
     main()
 
 #--- RUN ----------------------------------------------------------------------+
 
-initial=[5,5]               # initial starting location [x1,x2...]
-bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
-PSO(func1,initial,bounds,num_particles=15,maxiter=30)
+class AppWindow(QMainWindow):
+    def __init__(self):
+        super(AppWindow, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.actionPreset_Inputs.triggered.connect(self.preset_inputs)
+        self.ui.actionExit.triggered.connect(self.close)
+        self.ui.actionGroup_members.triggered.connect(self.show_members)
+        self.ui.actionHelp.triggered.connect(self.help)
+        self.ui.pushButton.clicked.connect(self.on_click)   # Connect "Run" button to function on_click()
+        self.ui.pushButton_2.clicked.connect(self.close)
+        self.show()
 
+    @pyqtSlot()     # A decorator to link signals
+    def on_click(self):
+        initial       = self.ui.lineEdit.text()
+        bounds        = self.ui.lineEdit_2.text()
+        num_particles = self.ui.lineEdit_3.text()
+        maxiter       = self.ui.lineEdit_4.text()
+
+        # Convert to list of int type
+        initial = list(map(int, initial.strip().split(',')))
+        bounds = list(map(int, bounds.strip().split(',')))
+
+        # Convert bounds to a list of list
+        valueSize = len(initial)
+        tempList = []
+        tempBound = []
+        for index, value in enumerate(bounds):
+            tempList.append(value)
+            if (index + 1) % valueSize == 0:
+                tempBound.append(tempList)
+                tempList = []
+        bounds = tempBound
+
+        # Convert to int
+        num_particles = int(num_particles)
+        maxiter = int(maxiter)
+
+        PSO(func1, initial, bounds, num_particles, maxiter)
+        QMessageBox.question(self, 'Result', "Global Best Position: " + str(globalBestPos)+ "\nGlobal Best Error: " + str(globalBestErr), QMessageBox.Ok, QMessageBox.Ok)
+
+    @pyqtSlot()
+    def preset_inputs(self):
+        self.ui.lineEdit.setText("5, 5")
+        self.ui.lineEdit_2.setText("-10, 10, -10, 10")
+        self.ui.lineEdit_3.setText("15")
+        self.ui.lineEdit_4.setText("30")
+
+    @pyqtSlot()
+    def show_members(self):
+        QMessageBox.question(self, 'Members', "Made by:\nAkash Kumar (3312016009001091)\nArijit Roy (331201600900xxxx)", QMessageBox.Ok, QMessageBox.Ok)
+
+    @pyqtSlot()
+    def help(self):
+        QMessageBox.question(self, 'Help', "Use comma separated values for inputs.\nUse Preset Inputs option from the Menu to use predefined values\n", QMessageBox.Ok, QMessageBox.Ok)
+
+
+
+app = QApplication(sys.argv)
+w = AppWindow()
+w.show()
+sys.exit(app.exec_())
+
+# initial=[5,5]               # initial starting location [x1,x2...]
+# bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
+# PSO(func1,initial,bounds,num_particles=15,maxiter=30)
 #--- END ----------------------------------------------------------------------+
