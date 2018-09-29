@@ -1,11 +1,11 @@
-#   Forked from Nathan A. Rooy's repository
+# Forked from Nathan A. Rooy's repository
 
-# IMPORT DEPENDENCIES
+# IMPORT DEPENDENCIES --------------------------------------------------------------------------------------------------
 
 import random
 import math
 
-# IMPORT GUI DEPENDENCIES
+# IMPORT GUI DEPENDENCIES ----------------------------------------------------------------------------------------------
 import sys
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
 from PyQt5.QtGui import QIcon
@@ -13,16 +13,16 @@ from PyQt5.QtCore import pyqtSlot
 
 from maingui import Ui_MainWindow   # Main page of the GUI
 
-# COST FUNCTION
+# COST FUNCTION --------------------------------------------------------------------------------------------------------
 
 # function we are attempting to optimize (minimize)
-def func1(x,y):
-    total=0
+def func1(x, y):
+    total = 0
     for i in range(len(x)):
-        total+=x[i]**2 + y[i]**2
+        total += x[i] ** 2 + y[i] ** 2
     return total
 
-# MAIN
+# MAIN -----------------------------------------------------------------------------------------------------------------
 
 class Particle:
     def __init__(self, x0, y0):
@@ -32,8 +32,8 @@ class Particle:
         self.velocity_i_y = []
         self.pos_best_i_x = []  # best position individual
         self.pos_best_i_y = []
-        self.err_best_i = -1  # best error individual
-        self.err_i = -1  # error individual
+        self.err_best_i = -1    # best error individual
+        self.err_i = -1         # error individual
 
         for i in range(0, num_dimensions):
             self.velocity_i_x.append(random.uniform(-1, 1))
@@ -49,11 +49,11 @@ class Particle:
         if self.err_i < self.err_best_i or self.err_best_i == -1:
             self.pos_best_i_x = self.position_i_x
             self.pos_best_i_y = self.position_i_y
-            self.err_best_i = self.err_i
+            self.err_best_i   = self.err_i
 
     # update new particle velocity
     def update_velocity(self, pos_best_g_x, pos_best_g_y):
-        w = 0.5  # constant inertia weight (how much to weigh the previous velocity)
+        w = 0.5 # constant inertia weight (how much to weigh the previous velocity)
         c1 = 1  # cognative constant
         c2 = 2  # social constant
 
@@ -106,9 +106,9 @@ class PSO():
         global globalBestErr
 
         num_dimensions = len(x0)
-        err_best_g = -1  # best error for group
-        pos_best_g_x = []  # best position for group
-        pos_best_g_y = []
+        err_best_g   = -1  # best error for group
+        pos_best_g_x = []  # best position (x coordinate) for group
+        pos_best_g_y = []  # best position (y coordinate) for group
 
         # establish the swarm
         swarm = []
@@ -118,7 +118,7 @@ class PSO():
         # begin optimization loop
         i = 0
         while i < maxiter:
-            # print i,err_best_g
+            ## print i,err_best_g
             # cycle through particles in swarm and evaluate fitness
             for j in range(0, num_particles):
                 swarm[j].evaluate(costFunc)
@@ -127,7 +127,7 @@ class PSO():
                 if swarm[j].err_i < err_best_g or err_best_g == -1:
                     pos_best_g_x = list(swarm[j].position_i_x)
                     pos_best_g_y = list(swarm[j].position_i_y)
-                    err_best_g = float(swarm[j].err_i)
+                    err_best_g   = float(swarm[j].err_i)
 
             # cycle through swarm and update velocities and position
             for j in range(0, num_particles):
@@ -135,8 +135,7 @@ class PSO():
                 swarm[j].update_position(bounds_x, bounds_y)
             i += 1
 
-
-        globalBestErr = err_best_g
+        globalBestErr  = err_best_g
         globalBestPosX = pos_best_g_x
         globalBestPosY = pos_best_g_y
 
@@ -151,7 +150,8 @@ class PSO():
 if __name__ == "__PSO__":
     main()
 
-# RUN
+# GUI ------------------------------------------------------------------------------------------------------------------
+
 class AppWindow(QMainWindow):
     def __init__(self):
         super(AppWindow, self).__init__()
@@ -167,18 +167,18 @@ class AppWindow(QMainWindow):
 
     @pyqtSlot()     # A decorator to link signals
     def on_click(self):
-        initial_x      = self.ui.lineEdit.text()
-        initial_y      = self.ui.lineEdit_2.text()
-        bounds_x       = self.ui.lineEdit_3.text()
-        bounds_y       = self.ui.lineEdit_4.text()
+        initial_x     = self.ui.lineEdit.text()
+        initial_y     = self.ui.lineEdit_2.text()
+        bounds_x      = self.ui.lineEdit_3.text()
+        bounds_y      = self.ui.lineEdit_4.text()
         num_particles = self.ui.lineEdit_5.text()
         maxiter       = self.ui.lineEdit_6.text()
 
         # Convert to list of int type
         initial_x = list(map(int, initial_x.strip().split(',')))
         initial_y = list(map(int, initial_y.strip().split(',')))
-        bounds_x = list(map(int, bounds_x.strip().split(',')))
-        bounds_y = list(map(int, bounds_y.strip().split(',')))
+        bounds_x  = list(map(int, bounds_x.strip().split(',')))
+        bounds_y  = list(map(int, bounds_y.strip().split(',')))
 
         # Convert bounds to a list of list
         bounds_x = self.formatBounds(bounds_x, initial_x)
@@ -193,7 +193,7 @@ class AppWindow(QMainWindow):
 
     def formatBounds(self, bounds, initial):
         valueSize = len(initial)
-        tempList = []
+        tempList  = []
         tempBound = []
         for index, value in enumerate(bounds):
             tempList.append(value)
@@ -220,14 +220,11 @@ class AppWindow(QMainWindow):
     def help(self):
         QMessageBox.question(self, 'Help', "Use comma separated values for inputs.\nUse Preset Inputs option from the Menu to use predefined values\n", QMessageBox.Ok, QMessageBox.Ok)
 
-
+# RUN ------------------------------------------------------------------------------------------------------------------
 
 app = QApplication(sys.argv)
 w = AppWindow()
 w.show()
 sys.exit(app.exec_())
 
-# initial=[5,5]               # initial starting location [x1,x2...]
-# bounds=[(-10,10),(-10,10)]  # input bounds [(x1_min,x1_max),(x2_min,x2_max)...]
-# PSO(func1,initial,bounds,num_particles=15,maxiter=30)
-# END
+# END ------------------------------------------------------------------------------------------------------------------
