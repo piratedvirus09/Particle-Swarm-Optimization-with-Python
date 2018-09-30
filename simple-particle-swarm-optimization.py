@@ -4,6 +4,7 @@
 
 import random
 import math
+
 from matplotlib import pyplot as plt
 
 # IMPORT GUI DEPENDENCIES ----------------------------------------------------------------------------------------------
@@ -19,14 +20,25 @@ from maingui import Ui_MainWindow   # Main page of the GUI
 
 # function we are attempting to optimize (minimize)
 def func1(x):
-    total=0
+    total = 0
     for i in range(len(x)):
         total += x[i] ** 2
     return total
 
 # MAIN -----------------------------------------------------------------------------------------------------------------
 
+# global definitions
+globalBestPos = []
+globalBestErr = 0
+bestCostsX = []
+bestCostsY = []
+positionsX = []
+positionsY = []
+
 class Particle:
+    global positionsX
+    global positionsY
+
     def __init__(self, x0):
         self.position_i = []          # particle position
         self.velocity_i = []          # particle velocity
@@ -74,10 +86,11 @@ class Particle:
             if self.position_i[i] < bounds[i][0]:
                 self.position_i[i] = bounds[i][0]
 
-globalBestPos = []
-globalBestErr = 0
-bestCostsX = []
-bestCostsY = []
+        try:
+            positionsX.append(self.position_i[0])
+            positionsY.append(self.position_i[1])
+        except IndexError:
+            pass
 
 class PSO():
     def __init__(self, costFunc, x0, bounds, num_particles, maxiter):
@@ -96,7 +109,7 @@ class PSO():
 
         # begin optimization loop
         i = 0
-        while i<maxiter:
+        while i < maxiter:
             #print i,err_best_g
             # cycle through particles in swarm and evaluate fitness
             for j in range(0, num_particles):
@@ -120,36 +133,25 @@ class PSO():
         globalBestPos = pos_best_g
 
         # print final results to console
-        print ("FINAL:")
-        print ("Global Best Position:")
-        print (pos_best_g)
-        print ("Global Best Error:")
-        print (err_best_g)
-
-        # plot final result
-        # self.plotFinal(pos_best_g)
+        print("FINAL:")
+        print("Global Best Position:")
+        print(pos_best_g)
+        print("Global Best Error:")
+        print(err_best_g)
 
         # plot best costs
-        self.plotBestCosts(bestCostsX, bestCostsY)
+        self.plotBestCosts(bestCostsX, bestCostsY, pos_best_g)
 
-    def plotFinal(self, pos_best_g):
-        plt.scatter(pos_best_g[0], pos_best_g[1])
+    def plotBestCosts(self, bestCostsX, bestCostsY, pos_best_g):
+        plt.scatter(positionsX, positionsY, color = 'b', label='Individual Best', marker = '.', linewidths = 1)
+        plt.scatter(bestCostsX, bestCostsY, color = 'r', label='Global Best', marker = '.', linewidths = 3)
+        plt.scatter(pos_best_g[0], pos_best_g[1], color = 'k', label='Global Best', marker = 'x', linewidths = 7)
 
-        plt.title('Final Result')
+        plt.title('Particle Swarm Optimization')
         plt.ylabel('Y axis')
         plt.xlabel('X axis')
 
         plt.show()
-
-    def plotBestCosts(self, bestCostsX, bestCostsY):
-        plt.scatter(bestCostsX, bestCostsY)
-
-        plt.title('Best Costs')
-        plt.ylabel('Y axis')
-        plt.xlabel('X axis')
-
-        plt.show()
-
 
 if __name__ == "__PSO__":
     main()
@@ -208,8 +210,7 @@ class AppWindow(QMainWindow):
 
     @pyqtSlot()
     def show_members(self):
-        QMessageBox.question(self, 'Members', "Made by:\nAkash Kumar (3312016009001091)"
-                                              "\nArijit Roy (331201600900xxxx)",
+        QMessageBox.question(self, 'Members', "Made by:\nAkash Kumar (3312016009001091)",
                              QMessageBox.Ok, QMessageBox.Ok)
 
     @pyqtSlot()

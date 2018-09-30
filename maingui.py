@@ -91,7 +91,6 @@ class Ui_MainWindow(object):
         self.actionExit.setMenuRole(QtWidgets.QAction.QuitRole)
         self.actionExit.setObjectName("actionExit")
         self.menuOptions.addAction(self.actionPreset_Inputs)
-        self.menuOptions.addAction(self.actionMatplotlib)
         self.menuOptions.addAction(self.actionExit)
         self.menuAbout.addAction(self.actionGroup_members)
         self.menuAbout.addAction(self.actionHelp)
@@ -104,11 +103,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Particle Swarm Optimization"))
-        self.lineEdit.setToolTip(_translate("MainWindow", "Enter initial starting location"))
-        self.lineEdit.setPlaceholderText(_translate("MainWindow", "  x1, x2 ..."))
+        self.lineEdit.setToolTip(_translate("MainWindow", "Enter initial starting location as a list (enclosed within square brackets)"))
+        self.lineEdit.setPlaceholderText(_translate("MainWindow", "  x1, x2, ..."))
         self.label.setText(_translate("MainWindow", "Enter the initial starting location:"))
         self.label_2.setText(_translate("MainWindow", "Enter the input bounds:"))
-        self.lineEdit_2.setToolTip(_translate("MainWindow", "Enter the input bounds"))
+        self.lineEdit_2.setToolTip(_translate("MainWindow", "Enter the input bounds as a list of tuples"))
         self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "  x1_min, x1_max, x2_min, x2_max, ..."))
         self.label_3.setText(_translate("MainWindow", "Enter the number of particles:"))
         self.lineEdit_3.setToolTip(_translate("MainWindow", "Enter the number of particles"))
@@ -126,3 +125,4 @@ class Ui_MainWindow(object):
         self.actionPreset_Inputs.setText(_translate("MainWindow", "Preset Inputs"))
         self.actionMatplotlib.setText(_translate("MainWindow", "Matplotlib"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
+

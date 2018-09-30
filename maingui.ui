@@ -36,7 +36,7 @@
      <string/>
     </property>
     <property name="placeholderText">
-     <string>  initial starting location</string>
+     <string>  x1, x2, ...</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -92,7 +92,7 @@
      <string>Enter the input bounds as a list of tuples</string>
     </property>
     <property name="placeholderText">
-     <string>  input bounds</string>
+     <string>  x1_min, x1_max, x2_min, x2_max, ...</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
@@ -211,7 +211,6 @@
      <string>Options</string>
     </property>
     <addaction name="actionPreset_Inputs"/>
-    <addaction name="actionMatplotlib"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
