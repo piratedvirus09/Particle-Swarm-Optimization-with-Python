@@ -60,10 +60,10 @@ class Particle:
             self.err_best_i = self.err_i
                     
     # update new particle velocity
-    def update_velocity(self, pos_best_g):
-        w = 0.5       # constant inertia weight (how much to weigh the previous velocity)
-        c1 = 1        # cognative constant
-        c2 = 2        # social constant
+    def update_velocity(self, pos_best_g, w, c1, c2):
+        # w = 0.5       # constant inertia weight (how much to weigh the previous velocity)
+        # c1 = 1        # cognative constant
+        # c2 = 2        # social constant
         
         for i in range(0, num_dimensions):
             r1 = random.random()
@@ -93,7 +93,7 @@ class Particle:
             pass
 
 class PSO():
-    def __init__(self, costFunc, x0, bounds, num_particles, maxiter):
+    def __init__(self, costFunc, x0, bounds, num_particles, maxiter, w, c1, c2):
         global num_dimensions
         global globalBestPos
         global globalBestErr
@@ -122,7 +122,7 @@ class PSO():
 
             # cycle through swarm and update velocities and position
             for j in range(0, num_particles):
-                swarm[j].update_velocity(pos_best_g)
+                swarm[j].update_velocity(pos_best_g, w, c1, c2)
                 swarm[j].update_position(bounds)
             i += 1
 
@@ -176,6 +176,9 @@ class AppWindow(QMainWindow):
         bounds        = self.ui.lineEdit_2.text()
         num_particles = self.ui.lineEdit_3.text()
         maxiter       = self.ui.lineEdit_4.text()
+        w             = self.ui.lineEdit_5.text()
+        c1            = self.ui.lineEdit_6.text()
+        c2            = self.ui.lineEdit_7.text()
 
         # Convert to list of int type
         initial = list(map(int, initial.strip().split(',')))
@@ -192,11 +195,14 @@ class AppWindow(QMainWindow):
                 tempList = []
         bounds = tempBound
 
-        # Convert to int
+        # Convert to int or float
         num_particles = int(num_particles)
         maxiter = int(maxiter)
+        w = float(w)
+        c1 = int(c1)
+        c2 = int(c2)
 
-        PSO(func1, initial, bounds, num_particles, maxiter)
+        PSO(func1, initial, bounds, num_particles, maxiter, w, c1, c2)
         QMessageBox.question(self, 'Result', "Global Best Position: " + str(globalBestPos)
                              + "\nGlobal Best Error: " + str(globalBestErr),
                              QMessageBox.Ok, QMessageBox.Ok)
@@ -207,6 +213,9 @@ class AppWindow(QMainWindow):
         self.ui.lineEdit_2.setText("-10, 10, -10, 10")
         self.ui.lineEdit_3.setText("15")
         self.ui.lineEdit_4.setText("30")
+        self.ui.lineEdit_5.setText("0.5")
+        self.ui.lineEdit_6.setText("1")
+        self.ui.lineEdit_7.setText("2")
 
     @pyqtSlot()
     def show_members(self):
