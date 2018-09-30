@@ -76,6 +76,8 @@ class Particle:
 
 globalBestPos = []
 globalBestErr = 0
+bestCostsX = []
+bestCostsY = []
 
 class PSO():
     def __init__(self,costFunc,x0,bounds,num_particles,maxiter):
@@ -104,12 +106,15 @@ class PSO():
                 if swarm[j].err_i<err_best_g or err_best_g==-1:
                     pos_best_g=list(swarm[j].position_i)
                     err_best_g=float(swarm[j].err_i)
-            
+
             # cycle through swarm and update velocities and position
             for j in range(0,num_particles):
                 swarm[j].update_velocity(pos_best_g)
                 swarm[j].update_position(bounds)
             i+=1
+
+            bestCostsX.append(pos_best_g[0])
+            bestCostsY.append(pos_best_g[1])
 
         globalBestErr = err_best_g
         globalBestPos = pos_best_g
@@ -120,8 +125,28 @@ class PSO():
         print (err_best_g)
 
         # plot final result
+        # self.plotFinal(pos_best_g)
 
+        # plot best costs
+        self.plotBestCosts(bestCostsX, bestCostsY)
 
+    def plotFinal(self, pos_best_g):
+        plt.scatter(pos_best_g[0], pos_best_g[1])
+
+        plt.title('Final Result')
+        plt.ylabel('Y axis')
+        plt.xlabel('X axis')
+
+        plt.show()
+
+    def plotBestCosts(self, bestCostsX, bestCostsY):
+        plt.scatter(bestCostsX, bestCostsY)
+
+        plt.title('Best Costs')
+        plt.ylabel('Y axis')
+        plt.xlabel('X axis')
+
+        plt.show()
 
 
 if __name__ == "__PSO__":
