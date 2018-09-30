@@ -2,7 +2,6 @@
 
 # IMPORT DEPENDENCIES
 
-from __future__ import division
 import random
 import math
 
@@ -116,6 +115,9 @@ class PSO():
         print ('FINAL:')
         print (pos_best_g)
         print (err_best_g)
+
+        # plot final result
+
 
 
 
